@@ -84,7 +84,7 @@ while (otraCompra === "si") {
         alert("Lo siento, no tenemos ese producto disponible en nuestra tienda náutica.");
     }
 
-    otraCompra = prompt("¿Quieres comprar algo más? (si/no)").toLowerCase();
+    otraCompra = prompt("¿Queres comprar algo más? (si/no)").toLowerCase();
 }
 
 // Mostrar total gastado
