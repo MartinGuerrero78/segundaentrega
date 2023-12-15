@@ -2,10 +2,38 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nauticos Guerrero</title>
+    <title>Estilos para la aplicación de Náutica Guerrero</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Nauticos Guerrero</h1>
+        <p>¡Lo que necesites para tu embarcación!</p>
+        <div id="nombreApellidoSection">
+            <input type="text" id="nombreApellidoInput" placeholder="Ingrese su nombre y apellido">
+            <button id="enviarBtn">Enviar</button>
+        </div>
+        <div id="mensajeBienvenida"></div>
+        <div id="productosDisponibles" style="display: none;"></div>
+        <div id="metodosPagoSection" style="display: none;">
+            <label for="metodoPago">Seleccione un método de pago:</label>
+            <select id="metodoPago">
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+                <option value="crypto">Crypto</option>
+            </select>
+            <button id="seleccionarMetodoPagoBtn">Seleccionar método de pago</button>
+        </div>
+        <div id="resumenYFinalizarCompra">
+            <div id="resumenCompra"></div>
+            <div id="botonesFinalizarModificar">
+                <button id="finalizarCompraBtn" style="display: none;">Finalizar Compra</button>
+                <button id="modificarPedidoBtn" style="display: none;">Modificar Pedido</button>
+                <div id="mensajeModificarPedido" style="display: none;">¿Necesitas modificar algo en tu pedido?</div>
+            </div>
+        </div>
+        <div id="mensajeDespedida"></div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

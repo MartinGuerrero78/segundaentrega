@@ -1,92 +1,120 @@
-// Nombre del comercio
-alert("Bienvenido/as a Náutica Guerrero");
+document.addEventListener("DOMContentLoaded", function() {
+    const nombreApellidoInput = document.getElementById("nombreApellidoInput");
+    const mensajeBienvenida = document.getElementById("mensajeBienvenida");
+    const productosDisponibles = document.getElementById("productosDisponibles");
+    const metodosPagoSection = document.getElementById("metodosPagoSection");
+    const metodoPagoSelect = document.getElementById("metodoPago");
+    const resumenYFinalizarCompra = document.getElementById("resumenYFinalizarCompra");
+    const resumenCompra = document.getElementById("resumenCompra");
+    const finalizarCompraBtn = document.getElementById("finalizarCompraBtn");
+    const modificarPedidoBtn = document.getElementById("modificarPedidoBtn");
+    const mensajeModificarPedido = document.getElementById("mensajeModificarPedido");
+    const mensajeDespedida = document.getElementById("mensajeDespedida");
 
-// Nombre y Apellido
-let nombreApellido = prompt("Por favor, ingrese su nombre y apellido aquí:");
+    let productosSeleccionados = [];
+    let metodoPagoSeleccionado = '';
 
-// Bienvenida
-alert(`Qué tal ${nombreApellido}, acá vas a tener la posibilidad de realizar tu pedido.`);
+    const productosNauticos = [
+        { nombre: "Velero", precio: 150000 },
+        { nombre: "Kayak", precio: 20000 },
+        { nombre: "Salvavidas", precio: 1000 },
+        { nombre: "Ancla", precio: 5000 },
+        { nombre: "Chaleco salvavidas", precio: 2000 },
+        { nombre: "Remo", precio: 1500 },
+        { nombre: "Boyas", precio: 1200 }
+    ];
 
-const productosNauticos = [
-    { nombre: "Velero", precio: 150000 },
-    { nombre: "Kayak", precio: 20000 },
-    { nombre: "Salvavidas", precio: 1000 },
-    { nombre: "Ancla", precio: 5000 },
-    { nombre: "Chaleco salvavidas", precio: 2000 },
-    { nombre: "Remo", precio: 1500 },
-    { nombre: "Boyas", precio: 1200 }
-];
+    const enviarBtn = document.getElementById("enviarBtn");
 
-let infoProductosNauticos = "Productos náuticos disponibles:\n";
+    enviarBtn.addEventListener("click", function() {
+        const nombreApellido = nombreApellidoInput.value.trim();
+        if (nombreApellido !== "") {
+            mensajeBienvenida.textContent = `¡Qué tal ${nombreApellido}, acá vas a tener la posibilidad de realizar tu pedido!`;
+            mostrarProductos();
+        } else {
+            mostrarError("Por favor, ingrese su nombre y apellido.");
+        }
+    });
 
-for (const producto of productosNauticos) {
-    infoProductosNauticos += `Nombre: ${producto.nombre} - Precio: ${producto.precio} pesos\n`;
-}
+    function mostrarProductos() {
+        productosDisponibles.style.display = "block";
+        let mensaje = "Productos Náuticos Disponibles:<br>";
 
-alert(infoProductosNauticos);
+        for (const producto of productosNauticos) {
+            mensaje += `<input type="checkbox" class="productoCheckbox" value="${producto.nombre}"> ${producto.nombre} - Precio: ${producto.precio} pesos<br>`;
+        }
 
-// Funciones
-function mostrarProductosNauticos() {
-    let mensaje = "Productos Náuticos Disponibles:\n";
+        productosDisponibles.innerHTML = mensaje;
+        metodosPagoSection.style.display = "block";
 
-    for (let i = 0; i < productosNauticos.length; i++) {
-        mensaje += `Nombre: ${productosNauticos[i].nombre} - Precio: ${productosNauticos[i].precio} pesos\n`;
+        finalizarCompraBtn.addEventListener("click", function() {
+            finalizarCompra();
+        });
+
+        modificarPedidoBtn.addEventListener("click", function() {
+            modificarPedido();
+        });
     }
 
-    alert(mensaje);
-}
+    const seleccionarMetodoPagoBtn = document.getElementById("seleccionarMetodoPagoBtn");
 
-function encontrarProductoPorNombre(nombre) {
-    const productoEncontrado = productosNauticos.find(producto => producto.nombre.toLowerCase() === nombre.toLowerCase());
+    seleccionarMetodoPagoBtn.addEventListener("click", function() {
+        metodoPagoSeleccionado = metodoPagoSelect.value;
+        const checkboxes = document.querySelectorAll('.productoCheckbox:checked');
+        productosSeleccionados = Array.from(checkboxes).map((checkbox) => checkbox.value);
 
-    if (productoEncontrado) {
-        return productoEncontrado;
-    } else {
-        return null;
-    }
-}
+        if (metodoPagoSeleccionado !== '' && productosSeleccionados.length > 0) {
+            mostrarResumenCompra(productosSeleccionados);
+        } else {
+            mostrarError("Por favor, seleccione un método de pago y al menos un producto.");
+        }
+    });
 
-let totalGastado = 0;
+    function mostrarResumenCompra(productosSeleccionados) {
+        let totalGastado = 0;
+        let mensaje = `<strong>Resumen de Compra:</strong><br><strong>Método de Pago:</strong> ${metodoPagoSeleccionado}<br>`;
 
-// Entrada de datos del cliente
-const productoCliente = prompt("Ingresa el nombre del producto deseado:");
+        productosSeleccionados.forEach((nombreProducto) => {
+            const producto = encontrarProductoPorNombre(nombreProducto);
+            const precioConIVA = producto.precio * 1.21; // 21% de IVA
+            totalGastado += precioConIVA;
+            mensaje += `Has elegido un/a ${producto.nombre}. El costo es de ${precioConIVA.toFixed(2)} pesos (IVA incluido).<br>`;
+        });
 
-// Búsqueda de producto náutico
-const productoElegido = encontrarProductoPorNombre(productoCliente);
+        mensaje += `<strong>Total Gastado:</strong> ${totalGastado.toFixed(2)} pesos`;
 
-// Mostrar resultados
-if (productoElegido) {
-    const precioConIVA = productoElegido.precio * 1.21; // 21% de IVA
-    alert(`Has elegido un/a ${productoElegido.nombre}. El costo es de ${precioConIVA.toFixed(2)} pesos (IVA incluido).`);
-    totalGastado += precioConIVA;
-} else {
-    alert("Lo siento, no tenemos ese producto disponible en nuestra tienda náutica.");
-}
+        resumenCompra.innerHTML = mensaje;
+        resumenCompra.style.display = "block";
+        resumenYFinalizarCompra.style.display = "block";
+        finalizarCompraBtn.style.display = "block";
+        modificarPedidoBtn.style.display = "block";
+        mensajeModificarPedido.style.display = "block";
 
-// Otra compra
-let otraCompra = prompt("¿Quieres comprar algo más? (si/no)").toLowerCase();
+        finalizarCompraBtn.addEventListener("click", function() {
+            finalizarCompra();
+        });
 
-while (otraCompra === "si") {
-    mostrarProductosNauticos(); // Mostrar productos náuticos disponibles
-
-    // Entrada de datos del cliente para la nueva compra
-    const nuevoProductoCliente = prompt("Ingresa el nombre del nuevo producto deseado:");
-
-    // Búsqueda de producto náutico para la nueva compra
-    const nuevoProductoElegido = encontrarProductoPorNombre(nuevoProductoCliente);
-
-    // Mostrar resultados para la nueva compra
-    if (nuevoProductoElegido) {
-        const precioConIVANuevo = nuevoProductoElegido.precio * 1.21; // 21% de IVA
-        alert(`Has elegido un/a ${nuevoProductoElegido.nombre}. El costo es de ${precioConIVANuevo.toFixed(2)} pesos (IVA incluido).`);
-        totalGastado += precioConIVANuevo;
-    } else {
-        alert("Lo siento, no tenemos ese producto disponible en nuestra tienda náutica.");
+        modificarPedidoBtn.addEventListener("click", function() {
+            modificarPedido();
+        });
     }
 
-    otraCompra = prompt("¿Queres comprar algo más? (si/no)").toLowerCase();
-}
+    function finalizarCompra() {
+        mensajeDespedida.textContent = "¡Gracias por elegirnos!";
+    }
 
-// Mostrar total gastado
-alert(`El total gastado en la tienda de náutica es de ${totalGastado.toFixed(2)} pesos. ¡Gracias por tu compra!`);
+    function modificarPedido() {
+        mensajeDespedida.textContent = "Pedido modificado. ¡Continúa con tu compra!";
+    }
 
+    function mostrarError(mensaje) {
+        const errorDiv = document.createElement('div');
+        errorDiv.textContent = mensaje;
+        errorDiv.style.color = 'red';
+        document.body.appendChild(errorDiv);
+    }
+
+    function encontrarProductoPorNombre(nombre) {
+        return productosNauticos.find(producto => producto.nombre.toLowerCase() === nombre.toLowerCase());
+    }
+});
